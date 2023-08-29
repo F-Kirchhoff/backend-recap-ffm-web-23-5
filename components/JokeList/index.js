@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import Link from "next/link";
 
-export default function JokeList({ jokes }) {
+export default function JokeList() {
   const { data, isLoading } = useSWR("/api/jokes");
 
   if (isLoading) {

@@ -1,13 +1,26 @@
 import JokeList from "../components/JokeList";
+import useSWR from "swr";
 
-export default function HomePage({ jokes, handleAddJoke }) {
-  function handleSubmit(event) {
+export default function HomePage() {
+  const { mutate } = useSWR("/api/jokes");
+
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const joke = Object.fromEntries(formData);
 
-    handleAddJoke(joke);
+    const response = await fetch("/api/jokes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(joke),
+    });
+
+    if (response.ok) {
+      mutate();
+    }
   }
   return (
     <>
@@ -16,7 +29,7 @@ export default function HomePage({ jokes, handleAddJoke }) {
         <input type="text" id="joke" name="joke" />
         <button>Submit</button>
       </form>
-      <JokeList jokes={jokes} />
+      <JokeList />
     </>
   );
 }
